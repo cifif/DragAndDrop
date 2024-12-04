@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag and Drop Example</title>
+  <style>
+    .draggable {
+      position: absolute;
+      cursor: pointer;
+      opacity: 0.7; /* Напівпрозорість */
+    }
+
+    #object1 {
+      background-color: rgba(255, 0, 0, 0.7); /* Червоний, напівпрозорий */
+      width: 100px;
+      height: 100px;
+      border-radius: 50%; /* Кругла форма */
+    }
+
+    #object2 {
+      background-color: rgba(0, 255, 0, 0.7); /* Зелений, напівпрозорий */
+      width: 150px;
+      height: 100px;
+      border-radius: 10px; /* Прямокутник з заокругленими кутами */
+    }
+
+    #object3 {
+      background-color: rgba(0, 0, 255, 0.7); /* Синій, напівпрозорий */
+      width: 0;
+      height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-bottom: 100px solid rgba(0, 0, 255, 0.7); /* Трикутник */
+    }
+  </style>
+</head>
+<body>
+
+  <div id="object1" class="draggable"></div>
+  <div id="object2" class="draggable"></div>
+  <div id="object3" class="draggable"></div>
+
+  <script>
+    let activeObject = null;
+    let offsetX, offsetY;
+
+    // Set initial positions for objects
+    document.getElementById('object1').style.top = '50px';
+    document.getElementById('object1').style.left = '50px';
+    document.getElementById('object2').style.top = '200px';
+    document.getElementById('object2').style.left = '50px';
+    document.getElementById('object3').style.top = '350px';
+    document.getElementById('object3').style.left = '50px';
+
+    // Add event listeners to each object
+    document.querySelectorAll('.draggable').forEach((obj) => {
+      obj.addEventListener('mousedown', (e) => {
+        activeObject = obj;
+        offsetX = e.clientX - obj.offsetLeft;
+        offsetY = e.clientY - obj.offsetTop;
+
+        // Add mousemove and mouseup listeners when dragging
+        document.addEventListener('mousemove', dragObject);
+        document.addEventListener('mouseup', stopDrag);
+      });
+    });
+
+    // Function to move the object
+    function dragObject(e) {
+      if (activeObject) {
+        let newX = e.clientX - offsetX;
+        let newY = e.clientY - offsetY;
+
+        // Prevent the object from going outside the window
+        newX = Math.max(0, Math.min(newX, window.innerWidth - activeObject.offsetWidth));
+        newY = Math.max(0, Math.min(newY, window.innerHeight - activeObject.offsetHeight));
+
+        activeObject.style.left = newX + 'px';
+        activeObject.style.top = newY + 'px';
+      }
+    }
+
+    // Stop dragging when mouse button is released
+    function stopDrag() {
+      activeObject = null;
+      document.removeEventListener('mousemove', dragObject);
+      document.removeEventListener('mouseup', stopDrag);
+    }
+  </script>
+
+</body>
+</html>
